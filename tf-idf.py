@@ -21,33 +21,35 @@ docs = [
 ]
 
 words = [v.replace(",", "").split(" ") for v in docs]
-words = list(set(itertools.chain(*words)))
+vocab = list(set(itertools.chain(*words)))
+i2v = {i: v for i, v in enumerate(vocab)}   # index to value
+v2i = {v: i for i, v in i2v.items()}   # value to index
 
 def get_tf(method="log"):
     # [n_vocab, n_doc]
-    _tf = np.zeros(shape=[len(words), len(docs)])
+    _tf = np.zeros(shape=[len(vocab), len(docs)])
     for i in range(len(words)):
-        for j in range(len(docs)):
-            if words[i] in docs[j]:
-                _tf[i][j] += 1
+        word, word_count = np.unique(words[i], return_counts=True)
+        for j in range(len(word)):
+            _tf[v2i[word[j]], i] = word_count[j]
     if method == "log":
-        weighted_tf = np.log(1+_tf)
-        return weighted_tf
+        return np.log(1+_tf)
 
 def get_idf(method="log"):
     # [n_vocab, 1]
-    _idf = np.zeros(shape=[len(words), 1])
-    for i in range(len(words)):
-        for j in range(len(docs)):
-            if words[i] in docs[j]:
-                _idf[i,0] += 1
+    _idf = np.zeros(shape=[len(vocab), 1])
+    for i in range(len(vocab)):
+        temp = 0
+        for j in range(len(words)):
+            if vocab[i] in words[j]:
+                temp += 1
+        _idf[i, 0] = temp
     if method == "log":
-        weighted_idf = 1 + np.log(len(docs) / (_idf+1))
-        return weighted_idf
+        return 1 + np.log(len(docs) / (_idf+1))
 
 def get_keywords(n=3):
     for i in range(tfidf.shape[1]):
-        print("doc{}: keyword:{}".format(i, np.array(words)[np.argsort(tfidf[:, i])[::-1][:n]]))
+        print("doc{}: keyword:{}".format(i, np.array(vocab)[np.argsort(tfidf[:, i])[::-1][:n]]))
 
 tf = get_tf()   # [n_vocab, n_doc]
 idf = get_idf()   # [n_vocab, 1]
