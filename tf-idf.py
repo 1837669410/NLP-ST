@@ -1,6 +1,7 @@
 # tf-idf
 import itertools
 import numpy as np
+from visual import show_tfidf
 
 docs = [
     "it is a good day, I like to stay here",
@@ -72,7 +73,7 @@ def query(q, idf, tfidf):
     else:
         _idf = idf
         _tf_idf = tfidf
-    q_tf = np.zeros(shape=[len(_idf), 1])   # [n_vocab+unk_word, 1]
+    q_tf = np.zeros(shape=[len(vocab), 1])   # [n_vocab+unk_word, 1]
     word, word_count = np.unique(q_words, return_counts=True)
     for i in range(len(word)):
         q_tf[v2i[word[i]], 0] = word_count[i]   # [n_vocab+unk_word, 1]
@@ -97,3 +98,5 @@ q = "I get a coffee cup"
 score = query(q, idf, tfidf)   # get similarity
 result = get_query_doc(score)   # get query result
 print("query result:{}".format(result))
+# show tfidf picture
+show_tfidf(tfidf.T, vocab[:tfidf.shape[0]])
