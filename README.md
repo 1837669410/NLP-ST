@@ -9,3 +9,7 @@ A simple and easy to understand NLP teaching
 ## tfidf
 
 [code](https://github.com/1837669410/NLP-ST/blob/main/tf-idf.py)
+
+## tfidf-sklearn
+
+[code](https://github.com/1837669410/NLP-ST/blob/main/tf-idf-sklearn.py)
