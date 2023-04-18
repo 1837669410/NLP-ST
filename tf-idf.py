@@ -51,8 +51,49 @@ def get_keywords(n=3):
     for i in range(tfidf.shape[1]):
         print("doc{}: keyword:{}".format(i, np.array(vocab)[np.argsort(tfidf[:, i])[::-1][:n]]))
 
+def cosine_similarity(x, y):
+    norm_x = np.sqrt(np.sum(np.square(x), axis=0, keepdims=True))   # [1, 1]
+    norm_y = np.sqrt(np.sum(np.square(y), axis=0, keepdims=True))   # [1, n_doc]
+    score = x.T.dot(y)   # [1, n_doc]
+    return score / (norm_x*norm_y)
+
+def query(q, idf, tfidf):
+    q_words = q.replace(",", "").split(" ")
+    unk_word = 0
+    for w in q_words:
+        if w not in vocab:
+            unk_word += 1
+            vocab.append(w)
+            v2i[w] = len(v2i)
+            i2v[len(v2i)-1] = w
+    if unk_word > 0:
+        _idf = np.concatenate((idf, np.zeros(shape=[unk_word, 1])), axis=0)   # [n_vocab+unk_word, 1]
+        _tf_idf = np.concatenate((tfidf, np.zeros(shape=[unk_word, len(docs)])), axis=0)   # [n_vocab+unk_word, n_doc]
+    else:
+        _idf = idf
+        _tf_idf = tfidf
+    q_tf = np.zeros(shape=[len(_idf), 1])   # [n_vocab+unk_word, 1]
+    word, word_count = np.unique(q_words, return_counts=True)
+    for i in range(len(word)):
+        q_tf[v2i[word[i]], 0] = word_count[i]   # [n_vocab+unk_word, 1]
+    q_tf_idf = q_tf * _idf   # [n_vocab+unk_word, 1] get query vector
+    q_score = cosine_similarity(q_tf_idf, _tf_idf)   # [1, n_doc]
+    return q_score.squeeze()
+
+def get_query_doc(q_score, n=3):
+    q_index = np.argsort(q_score)[::-1][:n]   # get query result index
+    result = []
+    for i in q_index:
+        result.append(docs[i])
+    return result
+
 tf = get_tf()   # [n_vocab, n_doc]
 idf = get_idf()   # [n_vocab, 1]
 tfidf = tf * idf   # [n_vocab, n_doc]
 # get keywords
 get_keywords()
+# query
+q = "I get a coffee cup"
+score = query(q, idf, tfidf)   # get similarity
+result = get_query_doc(score)   # get query result
+print("query result:{}".format(result))
