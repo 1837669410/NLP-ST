@@ -59,6 +59,11 @@ def load_w2v(n_window=2, method="skip_gram"):
     db = db.shuffle(94).batch(8)
     return db, len(v2i), i2v
 
+def preprocess_imdb(x, y):
+    x = tf.cast(x, dtype=tf.float32)
+    y = tf.cast(y, dtype=tf.int32)
+    return x, y
+
 def load_imdb(vocab_num, maxlen, batch_size):
     (x_train, y_train), (x_test, y_test) = tf.keras.datasets.imdb.load_data(num_words=vocab_num)
     x_train = tf.keras.preprocessing.sequence.pad_sequences(x_train, maxlen=maxlen)
@@ -70,9 +75,9 @@ def load_imdb(vocab_num, maxlen, batch_size):
     print(y_train[:3])
 
     db_train = tf.data.Dataset.from_tensor_slices((x_train, y_train))
-    db_train = db_train.shuffle(25000).batch(batch_size)
+    db_train = db_train.map(preprocess_imdb).shuffle(25000).batch(batch_size)
     db_test = tf.data.Dataset.from_tensor_slices((x_test, y_test))
-    db_test = db_test.shuffle(25000).batch(batch_size)
+    db_test = db_test.map(preprocess_imdb).shuffle(25000).batch(batch_size)
     return db_train, db_test
 
 if __name__ == "__main__":
