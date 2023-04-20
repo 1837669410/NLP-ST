@@ -80,6 +80,69 @@ def load_imdb(vocab_num, maxlen, batch_size):
     db_test = db_test.map(preprocess_imdb).shuffle(25000).batch(batch_size)
     return db_train, db_test
 
+def no_space(v, pre_v):
+    if v in [",", ".", "!", "?"] and pre_v != " ":
+        return " " + v
+    else:
+        return v
+
+def get_vocab(data, min_freq=2):
+    data_vocab, data_vocab_count = np.unique(data, return_counts=True)   # get vocab and vocab_count
+    data_vocab_index = np.where(data_vocab_count >= min_freq)   # get vocab_count >= 2 index
+    data_vocab = data_vocab[data_vocab_index]   # get vocab
+    return data_vocab
+
+def get_i2v_v2i(vocab):
+    i2v = {i+4: v for i, v in enumerate(vocab)}
+    i2v[0] = "<unk>"   # stop word
+    i2v[1] = "<pad>"   # padding word
+    i2v[2] = "<go>"    # start word
+    i2v[3] = "<eos>"   # end word
+    v2i = {v: i for i, v in i2v.items()}
+    return i2v, v2i
+
+def build_nmt_datasets(data, i2v, v2i, max_length=8):
+    valid_len = []
+    for i in range(len(data)):
+        data[i].append("<eos>")   # add stop word
+        valid_len.append(len(data[i]))
+        if len(data[i]) > max_length:
+            data[i] = data[i][:max_length]   # truncate
+        else:
+            data[i] = data[i] + (max_length - len(data[i])) * ["<pad>"]   # pad
+        for j in range(len(data[i])):
+            data[i][j] = v2i.get(data[i][j], v2i.get("<unk>"))
+    return np.array(data), np.array(valid_len)
+
+def preprocess_nmt(x, y):
+    x = tf.cast(x, dtype=tf.float32)
+    y = tf.cast(y, dtype=tf.int32)
+    return x, y
+
+def load_fra(num_sample=600, min_freq=2, max_length=8):
+    with open("./data/fra.txt", "r", encoding="utf-8") as fp:
+        data = fp.read()
+    data = data.replace('\u202f', ' ').replace('\xa0', ' ').lower()   # standard format
+    data = "".join([no_space(data[i], data[i-1]) for i in range(len(data))])   # Make sure there are spaces before [,.!?]
+    en = []   # english
+    fr = []   # french
+    for i, v in enumerate(data.split("\n")):
+        if i >= num_sample:   # set max num_sample
+            break
+        temp = v.split("\t")
+        en.append(temp[0].split(" "))   # get en
+        fr.append(temp[1].split(" "))   # get fr
+    en_vocab = get_vocab(list(itertools.chain(*en)), min_freq=min_freq)   # get en vocab
+    fr_vocab = get_vocab(list(itertools.chain(*fr)), min_freq=min_freq)   # get fr vocab
+    en_i2v, en_v2i = get_i2v_v2i(en_vocab)   # get en: index to vocab and vocab to index
+    fr_i2v, fr_v2i = get_i2v_v2i(fr_vocab)   # get fr: index to vocab and vocab to index
+    en, valid_en = build_nmt_datasets(en, en_i2v, en_v2i, max_length=max_length)   # get train en
+    fr, valid_fr = build_nmt_datasets(fr, fr_i2v, fr_v2i, max_length=max_length)   # get train fr
+    db_en = tf.data.Dataset.from_tensor_slices((en, valid_en))
+    db_en = db_en.map(preprocess_nmt).shuffle(num_sample).batch(64)   # get db_en iter
+    db_fr = tf.data.Dataset.from_tensor_slices((fr, valid_fr))
+    db_fr = db_fr.map(preprocess_nmt).shuffle(num_sample).batch(64)   # get db_fr iter
+    return db_en, db_fr, en_i2v, en_v2i, fr_i2v, fr_v2i
+
 if __name__ == "__main__":
-    db_train, db_test = load_imdb(vocab_num=10000, maxlen=100, batch_size=64)
-    print(next(iter(db_train))[0].shape, next(iter(db_train))[1].shape, next(iter(db_test))[0].shape, next(iter(db_test))[1].shape)
+    load_fra(num_sample=600)
