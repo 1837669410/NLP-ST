@@ -1,4 +1,5 @@
 def set_soft_gpu(soft_gpu):
+    # Code referencing MOFAN https://mofanpy.com/
     import tensorflow as tf
     if soft_gpu:
         gpus = tf.config.experimental.list_physical_devices('GPU')
