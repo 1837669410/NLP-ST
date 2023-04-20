@@ -51,8 +51,8 @@ def load_w2v(n_window=2, method="skip_gram"):
 
     db = tf.data.Dataset.from_tensor_slices((x,y))
     db = db.shuffle(94).batch(8)
-    return db
+    return db, len(v2i)
 
 if __name__ == "__main__":
-    db = load_w2v(method="cbow")
-    print(next(iter(db))[0].shape, next(iter(db))[1].shape)
+    db, vocab_num = load_w2v(method="cbow")
+    print(next(iter(db))[0].shape, next(iter(db))[1].shape, vocab_num)
