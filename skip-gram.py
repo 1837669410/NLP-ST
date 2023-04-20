@@ -30,7 +30,7 @@ class Skip_Gram(keras.Model):
         self.opt = keras.optimizers.Adam(0.01)
 
     def call(self, inputs, training=None, mask=None):
-        # embedding [None 1] -> [None 1 2]
+        # embedding [None 1] -> [None 1 2] -> [None 2]
         emb = self.embedding(inputs)
         out = tf.squeeze(emb)
         return out
