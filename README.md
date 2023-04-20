@@ -17,3 +17,7 @@ A simple and easy to understand NLP teaching
 ## hmm
 
 [code](https://github.com/1837669410/NLP-ST/blob/main/hmm.py)
+
+## cbow
+
+[code](https://github.com/1837669410/NLP-ST/blob/main/cbow.py)
