@@ -2,26 +2,31 @@
 
 A simple and easy to understand NLP teaching
 
-## inverted-index
+## method
+
+- statistical method: [inverted-index](#para1) | [tfidf](#para2) | [tfidf-sklearn](#para3) | [hmm](#para4)
+- word vector: [cbow](#para5) | [skip-gram](#para6)
+
+## <a id="para1"/>inverted-index
 
 [code](https://github.com/1837669410/NLP-ST/blob/main/inverted-index.py)
 
-## tfidf
+## <a id="para2"/>tfidf
 
 [code](https://github.com/1837669410/NLP-ST/blob/main/tf-idf.py)
 
-## tfidf-sklearn
+## <a id="para3"/>tfidf-sklearn
 
 [code](https://github.com/1837669410/NLP-ST/blob/main/tf-idf-sklearn.py)
 
-## hmm
+## <a id="para4"/>hmm
 
 [code](https://github.com/1837669410/NLP-ST/blob/main/hmm.py)
 
-## cbow
+## <a id="para5"/>cbow
 
 [code](https://github.com/1837669410/NLP-ST/blob/main/cbow.py)
 
-## skip-gram
+## <a id="para6"/>skip-gram
 
 [code](https://github.com/1837669410/NLP-ST/blob/main/skip-gram.py)
