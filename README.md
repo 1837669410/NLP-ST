@@ -8,7 +8,7 @@ A simple and easy to understand NLP teaching
 - word vector: [cbow](#para5) | [skip-gram](#para6)
 - sentence vector: [textcnn](#para7) | [seq2seq](#para8)
 
-## <a id="para1"/>inverted-index
+## <a id="para1"/>inverted-index(倒排索引)
 
 [code](https://github.com/1837669410/NLP-ST/blob/main/inverted-index.py)
 
