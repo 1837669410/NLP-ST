@@ -59,6 +59,22 @@ def load_w2v(n_window=2, method="skip_gram"):
     db = db.shuffle(94).batch(8)
     return db, len(v2i), i2v
 
+def load_imdb(vocab_num, maxlen, batch_size):
+    (x_train, y_train), (x_test, y_test) = tf.keras.datasets.imdb.load_data(num_words=vocab_num)
+    x_train = tf.keras.preprocessing.sequence.pad_sequences(x_train, maxlen=maxlen)
+    x_test = tf.keras.preprocessing.sequence.pad_sequences(x_test, maxlen=maxlen)
+    print(x_train.shape, y_train.shape, x_test.shape, y_test.shape)
+    print("x example:")
+    print(x_train[:3,:])
+    print("y example:")
+    print(y_train[:3])
+
+    db_train = tf.data.Dataset.from_tensor_slices((x_train, y_train))
+    db_train = db_train.shuffle(25000).batch(batch_size)
+    db_test = tf.data.Dataset.from_tensor_slices((x_test, y_test))
+    db_test = db_test.shuffle(25000).batch(batch_size)
+    return db_train, db_test
+
 if __name__ == "__main__":
-    db, vocab_num, i2v = load_w2v(method="skip_gram")
-    print(next(iter(db))[0].shape, next(iter(db))[1].shape, vocab_num)
+    db_train, db_test = load_imdb(vocab_num=10000, maxlen=100, batch_size=64)
+    print(next(iter(db_train))[0].shape, next(iter(db_train))[1].shape, next(iter(db_test))[0].shape, next(iter(db_test))[1].shape)
