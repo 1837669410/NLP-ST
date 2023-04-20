@@ -41,6 +41,12 @@ def load_w2v(n_window=2, method="skip_gram"):
                 temp.append(v2i[words[i][j]])   # get y
                 x.append(temp[:-1])
                 y.append(temp[-1])
+        if method == "skip_gram":
+            for j in range(len(words[i])):
+                for w in js_window:
+                    if j + w >= 0 and j + w < len(words[i]):
+                        x.append([v2i[words[i][j]]])
+                        y.append(v2i[words[i][j+w]])
 
     x = np.array(x)
     y = np.array(y)
@@ -54,5 +60,5 @@ def load_w2v(n_window=2, method="skip_gram"):
     return db, len(v2i), i2v
 
 if __name__ == "__main__":
-    db, vocab_num, i2v = load_w2v(method="cbow")
+    db, vocab_num, i2v = load_w2v(method="skip_gram")
     print(next(iter(db))[0].shape, next(iter(db))[1].shape, vocab_num)
