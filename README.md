@@ -6,7 +6,7 @@ A simple and easy to understand NLP teaching
 
 - statistical method: [inverted-index](#para1) | [tfidf](#para2) | [tfidf-sklearn](#para3) | [hmm](#para4)
 - word vector: [cbow](#para5) | [skip-gram](#para6)
-- sentence: [textcnn](#para7)
+- sentence vector: [textcnn](#para7)
 
 ## <a id="para1"/>inverted-index
 
