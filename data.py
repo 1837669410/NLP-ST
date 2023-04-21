@@ -119,7 +119,7 @@ def preprocess_nmt(x, y):
     y = tf.cast(y, dtype=tf.int32)
     return x, y
 
-def load_fra(num_sample=600, min_freq=2, max_length=8):
+def load_fra(num_sample=600, min_freq=2, max_length=8, batch_size=64):
     with open("./data/fra.txt", "r", encoding="utf-8") as fp:
         data = fp.read()
     data = data.replace('\u202f', ' ').replace('\xa0', ' ').lower()   # standard format
@@ -139,9 +139,9 @@ def load_fra(num_sample=600, min_freq=2, max_length=8):
     en, valid_en = build_nmt_datasets(en, en_i2v, en_v2i, max_length=max_length)   # get train en
     fr, valid_fr = build_nmt_datasets(fr, fr_i2v, fr_v2i, max_length=max_length)   # get train fr
     db_en = tf.data.Dataset.from_tensor_slices((en, valid_en))
-    db_en = db_en.map(preprocess_nmt).shuffle(num_sample).batch(64)   # get db_en iter
+    db_en = db_en.map(preprocess_nmt).batch(batch_size)   # get db_en iter
     db_fr = tf.data.Dataset.from_tensor_slices((fr, valid_fr))
-    db_fr = db_fr.map(preprocess_nmt).shuffle(num_sample).batch(64)   # get db_fr iter
+    db_fr = db_fr.map(preprocess_nmt).batch(batch_size)   # get db_fr iter
     return db_en, db_fr, en_i2v, en_v2i, fr_i2v, fr_v2i
 
 if __name__ == "__main__":
