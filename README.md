@@ -12,7 +12,7 @@ A simple and easy to understand NLP teaching
 
 [code](https://github.com/1837669410/NLP-ST/blob/main/inverted-index.py)
 
-[paper1](https://github.com/1837669410/NLP-ST/blob/main/paper/Keyword-in-Context%20index%20for%20Technical%20Literature.pdf)
+[paper1](https://github.com/1837669410/NLP-ST/blob/main/paper/Keyword-in-Context%20index%20for%20Technical%20Literature.pdf)：Keyword-in-Context Index for Technical Literature
 
 ## <a id="para2"/>tfidf
 
