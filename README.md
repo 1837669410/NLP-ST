@@ -14,7 +14,7 @@ A simple and easy to understand NLP teaching
 
 [paper1](https://github.com/1837669410/NLP-ST/blob/main/paper/Keyword-in-Context%20index%20for%20Technical%20Literature.pdf)：Keyword-in-Context Index for Technical Literature
 
-[paper2](https://github.com/1837669410/NLP-ST/blob/main/paper/The Inverted Multi-Index.pdf)：The Inverted Multi-Index
+[paper2](https://github.com/1837669410/NLP-ST/blob/main/paper/The%20Inverted%20Multi-Index.pdf)：The Inverted Multi-Index
 
 ## <a id="para2"/>tfidf
 
