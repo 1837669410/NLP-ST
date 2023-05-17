@@ -32,9 +32,13 @@ A simple and easy to understand NLP teaching
 
 [code](https://github.com/1837669410/NLP-ST/blob/main/cbow.py)
 
+[paper1](https://github.com/1837669410/NLP-ST/blob/main/paper/Efficient%20Estimation%20of%20Word%20Representations%20in%20Vector%20Space.pdf)：Efficient Estimation of Word Representations in Vector Space
+
 ## <a id="para6"/>skip-gram
 
 [code](https://github.com/1837669410/NLP-ST/blob/main/skip-gram.py)
+
+[paper1](https://github.com/1837669410/NLP-ST/blob/main/paper/Efficient%20Estimation%20of%20Word%20Representations%20in%20Vector%20Space.pdf)：Efficient Estimation of Word Representations in Vector Space
 
 ## <a id="para7">textcnn
 
