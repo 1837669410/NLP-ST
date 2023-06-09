@@ -48,6 +48,8 @@ A simple and easy to understand NLP teaching
 
 [code](https://github.com/1837669410/NLP-ST/blob/main/seq2seq.py)
 
+[paper1](https://github.com/1837669410/NLP-ST/blob/main/paper/Sequence%20to%20Sequence%20Learning%20with%20Neural%20Networks.pdf)：Sequence to Sequence Learning with Neural Networks
+
 ## <a id="para9">seq2seq-cnn
 
 [code](https://github.com/1837669410/NLP-ST/blob/main/seq2seq-cnn.py)
