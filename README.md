@@ -46,6 +46,8 @@ A simple and easy to understand NLP teaching
 
 [paper1](https://github.com/1837669410/NLP-ST/blob/main/paper/Convolutional%20Neural%20Networks%20for%20Sentence%20Classification.pdf)：Convolutional Neural Networks for Sentence Classification
 
+[paper2](https://github.com/1837669410/NLP-ST/blob/main/paper/A%20Sensitivity%20Analysis%20of%20(and%20Practitioners%E2%80%99%20Guide%20to)%20Convolutional.pdf)：A Sensitivity Analysis of (and Practitioners' Guide to) Convolutional Neural Networks for Sentence Classification
+
 ## <a id="para8">seq2seq
 
 [code](https://github.com/1837669410/NLP-ST/blob/main/seq2seq.py)
@@ -56,5 +58,5 @@ A simple and easy to understand NLP teaching
 
 [code](https://github.com/1837669410/NLP-ST/blob/main/seq2seq-cnn.py)
 
-
+[paper1](https://github.com/1837669410/NLP-ST/blob/main/paper/Convolutional%20Neural%20Networks%20for%20Sentence%20Classification.pdf)：Convolutional Neural Networks for Sentence Classification
 
