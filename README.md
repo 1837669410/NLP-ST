@@ -55,12 +55,12 @@ A simple and easy to understand NLP teaching
 
 [paper1](https://github.com/1837669410/NLP-ST/blob/main/paper/Sequence%20to%20Sequence%20Learning%20with%20Neural%20Networks.pdf)：Sequence to Sequence Learning with Neural Networks
 
-##<a id="para9">seq2seq-cnn
+## <a id="para9">seq2seq-cnn
 
 [code](https://github.com/1837669410/NLP-ST/blob/main/seq2seq-cnn.py)
 
 [paper1](https://github.com/1837669410/NLP-ST/blob/main/paper/Convolutional%20Neural%20Networks%20for%20Sentence%20Classification.pdf)：Convolutional Neural Networks for Sentence Classification
 
-##<a id="para10">seq2seq-BahdanauAttention
+## <a id="para10">seq2seq-BahdanauAttention
 
 [code](https://github.com/1837669410/NLP-ST/blob/main/seq2seq-BahdanauAttention.py)
