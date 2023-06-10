@@ -71,7 +71,7 @@ class Seq2Seq(keras.Model):
         # [None max_length emb_dim] -> [max_length None emb_dim]
         emb = tf.transpose(emb, perm=(1,0,2))
         outputs = []
-        # 循环需要在每一个step上单独计算，但是可以把所有的batch_size拿进去一起算
+        # The loop needs to be calculated separately on each step, but all batches can Calculate the size together
         for x in emb:
             # query [None units] -> [None 1 units]
             query = tf.expand_dims(state[-1], axis=1)
