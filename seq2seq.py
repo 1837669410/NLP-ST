@@ -2,7 +2,6 @@ import tensorflow as tf
 from tensorflow import keras
 from utils import set_soft_gpu
 from data import load_fra
-from d2l import tensorflow as d2l   # cite:https://zh.d2l.ai/chapter_recurrent-modern/seq2seq.html#sec-seq2seq-training
 
 def pad_data(data, v2i, max_length):
     if len(data) > max_length:
