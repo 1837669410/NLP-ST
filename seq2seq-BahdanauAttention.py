@@ -71,10 +71,11 @@ class Seq2Seq(keras.Model):
         # [None max_length emb_dim] -> [max_length None emb_dim]
         emb = tf.transpose(emb, perm=(1,0,2))
         outputs = []
+        # 循环需要在每一个step上单独计算，但是可以把所有的batch_size拿进去一起算
         for x in emb:
             # query [None units] -> [None 1 units]
             query = tf.expand_dims(state[-1], axis=1)
-            # context [None 1 units]
+            # context input(query, key, value, valid_len) output([None 1 units])
             context = self.attention(query, en_o, en_o, en_valid_len)
             # concat (None 1 units and None 1 emb_dim) -> [None 1 units+emb_dim]
             x = tf.concat((context, tf.expand_dims(x, axis=1)), axis=-1)
