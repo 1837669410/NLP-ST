@@ -7,7 +7,7 @@ A simple and easy to understand NLP teaching
 - statistical method: [inverted-index](#para1) | [tfidf](#para2) | [tfidf-sklearn](#para3) | [hmm](#para4)
 - word vector: [cbow](#para5) | [skip-gram](#para6)
 - sentence vector: [textcnn](#para7) | [seq2seq](#para8) | [seq2seq-cnn](#para9)
-- attention: [seq2seq-BahdanauAttention](#para10)
+- attention: [seq2seq-BahdanauAttention](#para10) | [seq2seq-LuongAttention](#para11)
 
 ## <a id="para1"/>inverted-index(倒排索引)
 
@@ -64,3 +64,9 @@ A simple and easy to understand NLP teaching
 ## <a id="para10">seq2seq-BahdanauAttention
 
 [code](https://github.com/1837669410/NLP-ST/blob/main/seq2seq-BahdanauAttention.py)
+
+[paper1](https://github.com/1837669410/NLP-ST/blob/main/paper/Neural%20Machine%20Translation%20by%20Jointly%20Learning%20to%20Align%20and%20Translate.pdf)：Neural Machine Translation By Jointly Learning To Align And Translate
+
+## <a id="para11">seq2seq-LuongAttention
+
+[code](https://github.com/1837669410/NLP-ST/blob/main/seq2seq-LuongAttention.py)
