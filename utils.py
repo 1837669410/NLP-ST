@@ -9,3 +9,6 @@ def set_soft_gpu(soft_gpu):
                 tf.config.experimental.set_memory_growth(gpu, True)
             logical_gpus = tf.config.experimental.list_logical_devices('GPU')
             print(len(gpus), "Physical GPUs,", len(logical_gpus), "Logical GPUs")
+
+def fix_learning_rate(learning_rate, decay, epoch):
+    return learning_rate * 1 / (1 + decay * epoch)
