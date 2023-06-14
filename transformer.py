@@ -1,10 +1,9 @@
 import numpy as np
 import tensorflow as tf
 from tensorflow import keras
-from utils import set_soft_gpu
+from utils import set_soft_gpu, grad_clipping
 from data import load_fra
 from seq2seq import Mask_CategoricalCrossentropy, pad_data, sequence_mask
-from d2l import tensorflow as d2l
 
 def masked_softmax(x, valid_lens):
     if valid_lens is None:
@@ -256,7 +255,7 @@ def train():
                 y_hat, _ = model.call(en, de_input, en_valid, training=True)
                 loss = model.mask_loss_func.call(fr, y_hat, fr_valid)
                 grads = tape.gradient(loss, model.trainable_variables)
-                grads = d2l.grad_clipping(grads, 1)
+                grads = grad_clipping(grads, 1)
             model.opt.apply_gradients(zip(grads, model.trainable_variables))
 
         # inference
