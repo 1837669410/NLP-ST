@@ -77,6 +77,8 @@ A simple and easy to understand NLP teaching
 
 [code](https://github.com/1837669410/NLP-ST/blob/main/transformer.py)
 
+[paper1](https://github.com/1837669410/NLP-ST/blob/main/paper/Attention%20Is%20All%20You%20Need.pdf)：Attention Is All You Need
+
 # Todo
 
 - Translate a corresponding Pytorch code
