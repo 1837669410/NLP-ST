@@ -84,6 +84,8 @@ A simple and easy to understand NLP teaching
 
 [code](https://github.com/1837669410/NLP-ST/blob/main/elmo.py)
 
+[paper1](https://github.com/1837669410/NLP-ST/blob/main/paper/Deep%20contextualized%20word%20representation.pdf)
+
 # Todo
 
 - Translate a corresponding Pytorch code
