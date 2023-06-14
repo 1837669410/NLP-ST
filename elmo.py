@@ -1,5 +1,6 @@
 import tensorflow as tf
 import time
+import numpy as np
 from tensorflow import keras
 from utils import set_soft_gpu
 from data import load_mrpc
@@ -56,10 +57,21 @@ def train():
     emb_dim = 256
     units = 256
     n_layer = 2
-    use_save = True
+    use_save = False
+    use_pretrain_model = True
     s1, s2, i2v, v2i = load_mrpc(num_train_sample=4000, num_test_sample=500, min_freq=0, max_length=30, batch_size=64)
     model = ELMo(vocab_num=len(i2v), emb_dim=emb_dim, units=units, n_layer=n_layer)
     start_time = time.time()
+    if use_pretrain_model:
+        _, _, _ = model.train(next(iter(s1)))
+        print("Loading pre trained model ......")
+        model.embedding.set_weights(np.load("./model/elmo/elmo_embedding.npy"))
+        model.fs[0].set_weights(np.load("./model/elmo/elmo_fs0.npy", allow_pickle=True))
+        model.fs[1].set_weights(np.load("./model/elmo/elmo_fs1.npy", allow_pickle=True))
+        model.f_dense.set_weights(np.load("./model/elmo/elmo_fdense.npy", allow_pickle=True))
+        model.bs[0].set_weights(np.load("./model/elmo/elmo_bs0.npy", allow_pickle=True))
+        model.bs[1].set_weights(np.load("./model/elmo/elmo_bs1.npy", allow_pickle=True))
+        model.b_dense.set_weights(np.load("./model/elmo/elmo_bdense.npy", allow_pickle=True))
     for e in range(epoch):
         for step, x in enumerate(s1):
             with tf.GradientTape() as tape:
@@ -76,7 +88,14 @@ def train():
                 print("b_true: {}".format(" ".join([i2v[i] for i in b_pred if i2v[i] != "<pad>"])))
 
     if use_save:
-        model.save("./model/elmo/elmo.ckpt")
+        print("Saving model weights ......")
+        np.save("./model/elmo/elmo_embedding.npy", model.embedding.weights)
+        np.save("./model/elmo/elmo_fs0.npy", model.fs[0].weights)
+        np.save("./model/elmo/elmo_fs1.npy", model.fs[1].weights)
+        np.save("./model/elmo/elmo_fdense.npy", model.f_dense.weights)
+        np.save("./model/elmo/elmo_bs0.npy", model.bs[0].weights)
+        np.save("./model/elmo/elmo_bs1.npy", model.bs[1].weights)
+        np.save("./model/elmo/elmo_bdense.npy", model.b_dense.weights)
 
 if __name__ == "__main__":
     train()
