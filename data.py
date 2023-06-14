@@ -92,14 +92,21 @@ def get_vocab(data, min_freq=2):
     data_vocab = data_vocab[data_vocab_index]   # get vocab
     return data_vocab
 
-def get_i2v_v2i(vocab):
-    i2v = {i+4: v for i, v in enumerate(vocab)}
-    i2v[0] = "<unk>"   # stop word
-    i2v[1] = "<pad>"   # padding word
-    i2v[2] = "<go>"    # start word
-    i2v[3] = "<eos>"   # end word
-    v2i = {v: i for i, v in i2v.items()}
-    return i2v, v2i
+def get_i2v_v2i(vocab, method=None):
+    if method == "elmo":
+        i2v = {i+2: v for i, v in enumerate(vocab)}
+        i2v[0] = "<pad>"
+        i2v[1] = "<unk>"
+        v2i = {v: i for i, v in i2v.items()}
+        return i2v, v2i
+    else:
+        i2v = {i+4: v for i, v in enumerate(vocab)}
+        i2v[0] = "<unk>"   # stop word
+        i2v[1] = "<pad>"   # padding word
+        i2v[2] = "<go>"    # start word
+        i2v[3] = "<eos>"   # end word
+        v2i = {v: i for i, v in i2v.items()}
+        return i2v, v2i
 
 def build_nmt_datasets(data, i2v, v2i, max_length=8):
     valid_len = []
@@ -144,5 +151,57 @@ def load_fra(num_sample=600, min_freq=2, max_length=8, batch_size=64):
     db_fr = db_fr.map(preprocess_nmt).batch(batch_size)   # get db_fr iter
     return db_en, db_fr, en_i2v, en_v2i, fr_i2v, fr_v2i
 
+def read_mrpc(num_train_sample=2000, num_test_sample=500):
+    data = {"train": [], "test": []}
+    with open("./data/msr_paraphrase_train.txt", "r", encoding="utf-8") as fp:
+        data_train = fp.read()
+        data_train = "".join([no_space(data_train[i], data_train[i-1]) for i in range(len(data_train))])
+        data_train = data_train.split("\n")
+    with open("./data/msr_paraphrase_test.txt", "r", encoding="utf-8") as fp:
+        data_test = fp.read()
+        data_test = "".join([no_space(data_test[i], data_test[i-1]) for i in range(len(data_test))])
+        data_test = data_test.split("\n")
+    for i in range(1, len(data_train)):
+        if i > num_train_sample:
+            break
+        temp = data_train[i].split("\t")
+        data["train"].append(["<go>"] + temp[3].split(" ") + ["<sep>"])   # <sep>is a flag that separates string1 and string2
+        data["train"].append(["<go>"] + temp[4].split(" ") + ["<sep>"])
+    for i in range(1, len(data_test)):
+        if i > num_test_sample:
+            break
+        temp = data_test[i].split("\t")
+        data["test"].append(["<go>"] + temp[3].split(" ") + ["<sep>"])   # <sep>is a flag that separates string1 and string2
+        data["test"].append(["<go>"] + temp[4].split(" ") + ["<sep>"])
+    return data
+
+def build_mrpc_datasets(data, i2v, v2i, max_length=8):
+    for i in range(len(data)):
+        if len(data[i]) > max_length:
+            data[i] = data[i][:max_length]   # truncate
+        else:
+            data[i] = data[i] + (max_length - len(data[i])) * ["<pad>"]   # pad
+        for j in range(len(data[i])):
+            data[i][j] = v2i.get(data[i][j], v2i.get("<unk>"))
+    return np.array(data)
+
+def preprocess_mrpc(x):
+    x = tf.cast(x, dtype=tf.int32)
+    return x
+
+def load_mrpc(num_train_sample=4000, num_test_sample=500, min_freq=2, max_length=23, batch_size=64):
+    data = read_mrpc(num_train_sample, num_test_sample)
+    print("train: {} | test: {}".format(len(data["train"]), len(data["test"])))
+    vocab = get_vocab(list(itertools.chain(*data["train"])), min_freq=min_freq)   # get vocab
+    i2v, v2i = get_i2v_v2i(vocab, method="elmo")   # get index to vocab and vocab to index
+    s1 = build_mrpc_datasets(data["train"], i2v, v2i, max_length=max_length)   # get train data
+    s2 = build_mrpc_datasets(data["test"], i2v, v2i, max_length=max_length)   # get test data
+    s1 = tf.data.Dataset.from_tensor_slices((s1))
+    s1 = s1.map(preprocess_mrpc).shuffle(num_train_sample*2).batch(batch_size=batch_size)
+    s2 = tf.data.Dataset.from_tensor_slices((s2))
+    s2 = s2.map(preprocess_mrpc).shuffle(num_test_sample*2).batch(batch_size=batch_size)
+    print("train:{} | test: {}".format(next(iter(s1)).shape, next(iter(s2)).shape))
+    return s1, s2, i2v, v2i
+
 if __name__ == "__main__":
-    load_fra(num_sample=600)
+    s1, s2, i2v, v2i = load_mrpc()
