@@ -2,7 +2,7 @@
 
 A simple and easy to understand NLP teaching
 
-## algorithm
+# algorithm
 
 - statistical method: [inverted-index](#para1) | [tfidf](#para2) | [tfidf-sklearn](#para3) | [hmm](#para4)
 - word vector: [cbow](#para5) | [skip-gram](#para6)
@@ -76,3 +76,20 @@ A simple and easy to understand NLP teaching
 ## <a id="para12">transformer
 
 [code](https://github.com/1837669410/NLP-ST/blob/main/transformer.py)
+
+# Todo
+
+- Translate a corresponding Pytorch code
+- elmo
+- gpt
+- bert
+- Supporting video explanation (this may take a long time)
+- Recruit interested students to complete together
+
+# reference
+
+1、莫烦python [github](https://github.com/MorvanZhou/NLP-Tutorials) | [web](https://mofanpy.com/tutorials/machine-learning/nlp/)
+
+2、动手学深度学习 [web](https://zh.d2l.ai/)
+
+3、李沐老师 [bilibili](https://space.bilibili.com/1567748478/video)
