@@ -7,7 +7,7 @@ A simple and easy to understand NLP teaching
 - statistical method: [inverted-index](#para1) | [tfidf](#para2) | [tfidf-sklearn](#para3) | [hmm](#para4)
 - word vector: [cbow](#para5) | [skip-gram](#para6)
 - sentence vector: [textcnn](#para7) | [seq2seq](#para8) | [seq2seq-cnn](#para9)
-- attention: [seq2seq-BahdanauAttention](#para10) | [seq2seq-LuongAttention](#para11)
+- attention: [seq2seq-BahdanauAttention](#para10) | [seq2seq-LuongAttention](#para11) | [transformer](#para12)
 
 ## <a id="para1"/>inverted-index(倒排索引)
 
