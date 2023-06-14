@@ -6,19 +6,24 @@ from utils import set_soft_gpu
 from data import load_mrpc
 
 class ELMo(keras.Model):
-    def __init__(self, vocab_num, emb_dim, units, n_layer):
+    def __init__(self, vocab_num, emb_dim, units, n_layer, use_ln=False):
         super().__init__()
         self.n_layer = n_layer
         self.units = units
+        self.use_ln = use_ln
 
         self.embedding = keras.layers.Embedding(input_dim=vocab_num, output_dim=emb_dim,
                                                 embeddings_initializer=keras.initializers.RandomNormal(0., 0.001),
                                                 mask_zero=True)
         # forward lstm
         self.fs = [keras.layers.LSTM(units=units, return_sequences=True, return_state=True) for _ in range(n_layer)]
+        if use_ln:
+            self.fln = [keras.layers.LayerNormalization() for _ in range(n_layer)]
         self.f_dense = keras.layers.Dense(vocab_num)
         # backward lstm
         self.bs = [keras.layers.LSTM(units=units, return_sequences=True, return_state=True, go_backwards=True) for _ in range(n_layer)]
+        if use_ln:
+            self.bln = [keras.layers.LayerNormalization() for _ in range(n_layer)]
         self.b_dense = keras.layers.Dense(vocab_num)
 
         # loss_func
@@ -36,12 +41,18 @@ class ELMo(keras.Model):
         mask = self.embedding.compute_mask(x)
         fxs, bxs = emb[:, :-1], emb[:, 1:]   # All positive sequences
         f_state, b_state = self.fs[0].get_initial_state(fxs), self.bs[0].get_initial_state(fxs)
+        i = 0
         for f, b in zip(self.fs, self.bs):
             fxs, fh, fc = f(fxs, mask=mask[:, :-1], initial_state=f_state)
+            if self.use_ln:
+                fxs = self.fln[i](fxs)
             f_state = [fh, fc]
             bxs, bh, bc = b(bxs, mask=mask[:, 1:], initial_state=b_state)   # Returns a reverse sequence
+            if self.use_ln:
+                bxs = self.fln[i](bxs)
             bxs = tf.reverse(bxs, axis=[1])   # Because the input is a forward sequence, it needs to be reversed
             b_state = [bh, bc]
+            i += 1
         return fxs, bxs
 
     def train(self, x):
@@ -58,9 +69,10 @@ def train():
     units = 256
     n_layer = 2
     use_save = False
-    use_pretrain_model = True
+    use_pretrain_model = False
+    use_ln = False   # Using LayerNormalization to accelerate training can actually increase the speed by nearly 4-5 times
     s1, s2, i2v, v2i = load_mrpc(num_train_sample=4000, num_test_sample=500, min_freq=0, max_length=30, batch_size=64)
-    model = ELMo(vocab_num=len(i2v), emb_dim=emb_dim, units=units, n_layer=n_layer)
+    model = ELMo(vocab_num=len(i2v), emb_dim=emb_dim, units=units, n_layer=n_layer, use_ln=use_ln)
     start_time = time.time()
     if use_pretrain_model:
         _, _, _ = model.train(next(iter(s1)))
