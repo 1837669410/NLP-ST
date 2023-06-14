@@ -8,6 +8,7 @@ A simple and easy to understand NLP teaching
 - word vector: [cbow](#para5) | [skip-gram](#para6)
 - sentence vector: [textcnn](#para7) | [seq2seq](#para8) | [seq2seq-cnn](#para9)
 - attention: [seq2seq-BahdanauAttention](#para10) | [seq2seq-LuongAttention](#para11) | [transformer](#para12)
+- large Language Model: [elmo](#para13)
 
 ## <a id="para1"/>inverted-index(倒排索引)
 
@@ -79,10 +80,13 @@ A simple and easy to understand NLP teaching
 
 [paper1](https://github.com/1837669410/NLP-ST/blob/main/paper/Attention%20Is%20All%20You%20Need.pdf)：Attention Is All You Need
 
+## <a id="para13">elmo
+
+[code](https://github.com/1837669410/NLP-ST/blob/main/elmo.py)
+
 # Todo
 
 - Translate a corresponding Pytorch code
-- elmo
 - gpt
 - bert
 - Supporting video explanation (this may take a long time)
