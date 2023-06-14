@@ -71,6 +71,8 @@ A simple and easy to understand NLP teaching
 
 [code](https://github.com/1837669410/NLP-ST/blob/main/seq2seq-LuongAttention.py)
 
+[paper1](https://github.com/1837669410/NLP-ST/blob/main/paper/Effective%20Approaches%20to%20Attention-based%20Neural%20Machine%20Translation.pdf)：Effective Approaches to Attention-based Neural Machine Translation
+
 ## <a id="para12">transformer
 
 [code](https://github.com/1837669410/NLP-ST/blob/main/transformer.py)
