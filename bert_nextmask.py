@@ -11,14 +11,14 @@ class BERT(GPT):
         super().__init__(model_dim, n_head, n_layer, dropout_rate, max_length, n_vocab, max_seg=3, padding_idx=0, lr=1e-4)
 
     def mask(self, seq):
-        mask = tf.eye(self.max_length+1, dtype=tf.float32)
-        return mask
+        mask =  tf.linalg.band_part(1 - tf.eye(self.max_length, dtype=tf.float32), 0, 1)
+        return mask  # [step, step]
 
 def train():
     set_soft_gpu(True)
     epoch = 100
     data, i2v, v2i, max_length = load_mrpc_gpt(min_freq=2)
-    model = GPT(model_dim=256, n_head=4, n_layer=4, dropout_rate=0.2, max_length=max_length - 1, n_vocab=len(i2v), lr=1e-4)
+    model = BERT(model_dim=256, n_head=4, n_layer=4, dropout_rate=0.2, max_length=max_length - 1, n_vocab=len(i2v), lr=1e-4)
     start_time = time.time()
     for e in range(epoch):
         for step, (seq, seg, seq_valid_len, label) in enumerate(data):
