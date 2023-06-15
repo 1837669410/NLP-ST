@@ -99,6 +99,14 @@ def get_i2v_v2i(vocab, method=None):
         i2v[1] = "<unk>"
         v2i = {v: i for i, v in i2v.items()}
         return i2v, v2i
+    elif method == "gpt":
+        i2v = {i+4: v for i, v in enumerate(vocab)}
+        i2v[0] = "<pad>"
+        i2v[1] = "<unk>"
+        i2v[2] = "<go>"
+        i2v[3] = "<sep>"
+        v2i = {v: i for i, v in i2v.items()}
+        return i2v, v2i
     else:
         i2v = {i+4: v for i, v in enumerate(vocab)}
         i2v[0] = "<unk>"   # stop word
@@ -192,10 +200,10 @@ def preprocess_mrpc(x):
 def load_mrpc(num_train_sample=4000, num_test_sample=500, min_freq=2, max_length=23, batch_size=64):
     data = read_mrpc(num_train_sample, num_test_sample)
     print("train: {} | test: {}".format(len(data["train"]), len(data["test"])))
-    vocab = get_vocab(list(itertools.chain(*data["train"])), min_freq=min_freq)   # get vocab
-    i2v, v2i = get_i2v_v2i(vocab, method="elmo")   # get index to vocab and vocab to index
-    s1 = build_mrpc_datasets(data["train"], i2v, v2i, max_length=max_length)   # get train data
-    s2 = build_mrpc_datasets(data["test"], i2v, v2i, max_length=max_length)   # get test data
+    vocab = get_vocab(list(itertools.chain(*data["train"])), min_freq=min_freq)  # get vocab
+    i2v, v2i = get_i2v_v2i(vocab, method="elmo")  # get index to vocab and vocab to index
+    s1 = build_mrpc_datasets(data["train"], i2v, v2i, max_length=max_length)  # get train data
+    s2 = build_mrpc_datasets(data["test"], i2v, v2i, max_length=max_length)  # get test data
     s1 = tf.data.Dataset.from_tensor_slices((s1))
     s1 = s1.map(preprocess_mrpc).shuffle(num_train_sample*2).batch(batch_size=batch_size)
     s2 = tf.data.Dataset.from_tensor_slices((s2))
@@ -203,5 +211,68 @@ def load_mrpc(num_train_sample=4000, num_test_sample=500, min_freq=2, max_length
     print("train:{} | test: {}".format(next(iter(s1)).shape, next(iter(s2)).shape))
     return s1, s2, i2v, v2i
 
+def read_mrpc_gpt(num_train_sample=2000, num_test_sample=500, min_freq=2):
+    data = {"train": {"s1s2": [], "s1_valid_len": [], "s2_valid_len": [], "label": []},
+            "test": {"s1s2": [], "s1_valid_len": [], "s2_valid_len": [], "label": []}
+            }
+    vocab = []
+    with open("./data/msr_paraphrase_train.txt", "r", encoding="utf-8") as fp:
+        data_train = fp.read()
+        data_train = "".join([no_space(data_train[i], data_train[i-1]) for i in range(len(data_train))])
+        data_train = data_train.split("\n")
+    with open("./data/msr_paraphrase_test.txt", "r", encoding="utf-8") as fp:
+        data_test = fp.read()
+        data_test = "".join([no_space(data_test[i], data_test[i-1]) for i in range(len(data_test))])
+        data_test = data_test.split("\n")
+    for i in range(1, len(data_train)):
+        if i > num_train_sample:
+            break
+        temp = data_train[i].split("\t")
+        s1_valid_len = len(temp[3].split(" "))
+        s2_valid_len = len(temp[4].split(" "))
+        data["train"]["s1s2"].append(["<go>"] + temp[3].split(" ") + ["<sep>"] + temp[4].split(" ") + ["<sep>"])
+        data["train"]["s1_valid_len"].append(s1_valid_len)
+        data["train"]["s2_valid_len"].append(s2_valid_len)
+        data["train"]["label"].append(int(temp[0]))
+        vocab.append(temp[3].split(" ") + temp[4].split(" "))
+    for i in range(1, len(data_test)):
+        if i > num_test_sample:
+            break
+        temp = data_test[i].split("\t")
+        s1_valid_len = len(temp[3].split(" "))
+        s2_valid_len = len(temp[4].split(" "))
+        data["test"]["s1s2"].append(["<go>"] + temp[3].split(" ") + ["<sep>"] + temp[4].split(" ") + ["<sep>"])
+        data["test"]["s1_valid_len"].append(s1_valid_len)
+        data["test"]["s2_valid_len"].append(s2_valid_len)
+        data["test"]["label"].append(int(temp[0]))
+        vocab.append(temp[3].split(" ") + temp[4].split(" "))
+    vocab = get_vocab(list(itertools.chain(*vocab)), min_freq=min_freq)
+    i2v, v2i = get_i2v_v2i(vocab, method="gpt")
+    return data, i2v, v2i
+
+def preprocess_gpt(x, seg, y, l):
+    x = tf.cast(x, tf.int32)
+    seg = tf.cast(seg, tf.int32)
+    y = tf.cast(y, tf.int32)
+    l = tf.cast(l, tf.int32)
+    return x, seg, y, l
+
+def load_mrpc_gpt(num_train_sample=4000, num_test_sample=500, min_freq=2, batch_size=64):
+    data, i2v, v2i = read_mrpc_gpt(num_train_sample, num_test_sample, min_freq=min_freq)
+    max_length = max([len(v) for v in data["train"]["s1s2"] + data["test"]["s1s2"]])
+    x_len = np.array([[valid_len1, valid_len2] for valid_len1, valid_len2 in zip(data["train"]["s1_valid_len"], data["train"]["s2_valid_len"])])
+
+    x = build_mrpc_datasets(data["train"]["s1s2"], i2v, v2i, max_length=max_length)
+    seg = np.full(x.shape, 2, np.int32)
+    for i in range(len(x)):
+        si = x_len[i][0] + 2   # Because there are two labels in s1:<go>and<sep>, add 2
+        seg[i, :si] = 0
+        si_ = si + x_len[i][1] + 1   # Because there are one label in s2:<sep>, add 1
+        seg[i, si:si_] = 1
+    db = tf.data.Dataset.from_tensor_slices((x, seg, x_len, data["train"]["label"]))
+    db = db.map(preprocess_gpt).shuffle(num_train_sample).batch(batch_size)
+    print(next(iter(db))[0].shape, next(iter(db))[1].shape, next(iter(db))[2].shape, next(iter(db))[3].shape)
+    return db, i2v, v2i, max_length
+
 if __name__ == "__main__":
-    s1, s2, i2v, v2i = load_mrpc()
+    load_mrpc_gpt(num_train_sample=2000)
