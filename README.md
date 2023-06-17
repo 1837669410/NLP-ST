@@ -84,19 +84,19 @@ A simple and easy to understand NLP teaching
 
 [code](https://github.com/1837669410/NLP-ST/blob/main/elmo.py)
 
-[paper1](https://github.com/1837669410/NLP-ST/blob/main/paper/Deep%20contextualized%20word%20representation.pdf)
+[paper1](https://github.com/1837669410/NLP-ST/blob/main/paper/Deep%20contextualized%20word%20representation.pdf)：Deep contextualized word representation
 
 ## <a id="para14">gpt
 
 [code](https://github.com/1837669410/NLP-ST/blob/main/gpt.py)
 
-[paper1](https://github.com/1837669410/NLP-ST/blob/main/paper/Improving%20Language%20Understanding%20by%20Generative%20Pre-Training.pdf)
+[paper1](https://github.com/1837669410/NLP-ST/blob/main/paper/Improving%20Language%20Understanding%20by%20Generative%20Pre-Training.pdf)：Improving Language Understanding by Generative Pre-Training
 
 ## <a id="para15">bert
 
 [code](https://github.com/1837669410/NLP-ST/blob/main/bert_nextmask.py)
 
-[paper1](https://github.com/1837669410/NLP-ST/blob/main/paper/BERT%20Pre-training%20of%20Deep%20Bidirectional%20Transformers%20for%20Language%20Understanding.pdf)
+[paper1](https://github.com/1837669410/NLP-ST/blob/main/paper/BERT%20Pre-training%20of%20Deep%20Bidirectional%20Transformers%20for%20Language%20Understanding.pdf)：BERT：Pre-training of Deep Bidirectional Transformers for Language Understanding
 
 Note: There is a slight difference between the model of this Bert and the original paper. I have used an improved training method, which is already written at the beginning of the code. You can check it yourself
 
