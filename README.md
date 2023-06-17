@@ -8,7 +8,7 @@ A simple and easy to understand NLP teaching
 - word vector: [cbow](#para5) | [skip-gram](#para6)
 - sentence vector: [textcnn](#para7) | [seq2seq](#para8) | [seq2seq-cnn](#para9)
 - attention: [seq2seq-BahdanauAttention](#para10) | [seq2seq-LuongAttention](#para11) | [transformer](#para12)
-- large Language Model: [elmo](#para13)
+- large Language Model: [elmo](#para13) | [gpt](#para14) | [bert](#para15)
 
 ## <a id="para1"/>inverted-index(倒排索引)
 
@@ -86,11 +86,23 @@ A simple and easy to understand NLP teaching
 
 [paper1](https://github.com/1837669410/NLP-ST/blob/main/paper/Deep%20contextualized%20word%20representation.pdf)
 
+## <a id="para14">gpt
+
+[code](https://github.com/1837669410/NLP-ST/blob/main/gpt.py)
+
+[paper1](https://github.com/1837669410/NLP-ST/blob/main/paper/Improving%20Language%20Understanding%20by%20Generative%20Pre-Training.pdf)
+
+## <a id="para15">bert
+
+[code](https://github.com/1837669410/NLP-ST/blob/main/bert_nextmask.py)
+
+[paper1](https://github.com/1837669410/NLP-ST/blob/main/paper/BERT%20Pre-training%20of%20Deep%20Bidirectional%20Transformers%20for%20Language%20Understanding.pdf)
+
+Note: There is a slight difference between the model of this Bert and the original paper. I have used an improved training method, which is already written at the beginning of the code. You can check it yourself
+
 # Todo
 
 - Translate a corresponding Pytorch code
-- gpt
-- bert
 - Supporting video explanation (this may take a long time)
 - Recruit interested students to complete together
 
